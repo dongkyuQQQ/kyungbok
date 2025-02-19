@@ -36,13 +36,18 @@ interface MatchPageProps {
   }
 }
 
+interface ExtendedGoal extends Goal {
+  scorer: Member
+  assist?: Member
+}
+
 export default function MatchPage({ params }: MatchPageProps) {
   const searchParams = useSearchParams()
   const initialQuarter = parseInt(searchParams.get('quarter') || '1')
   const [selectedQuarter, setSelectedQuarter] = useState(initialQuarter)
   const [match, setMatch] = useState<Match | null>(null)
   const [members, setMembers] = useState<Member[]>([])
-  const [goals, setGoals] = useState<Goal[]>([])
+  const [goals, setGoals] = useState<ExtendedGoal[]>([])
   const [entries, setEntries] = useState<Entry[]>([])
   const [turnovers, setTurnovers] = useState<Turnover[]>([])
   const [ratings, setRatings] = useState<Rating[]>([])
@@ -90,7 +95,12 @@ export default function MatchPage({ params }: MatchPageProps) {
 
   const fetchGoals = async () => {
     try {
-      const response = await fetch(`/api/schedule/${params.id}/goals`)
+      const response = await fetch(`/api/schedule/${params.id}/goals`, {
+        cache: 'no-store'
+      })
+      if (!response.ok) {
+        throw new Error('Failed to fetch goals')
+      }
       const data = await response.json()
       setGoals(data)
     } catch (error) {
