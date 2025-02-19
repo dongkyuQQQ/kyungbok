@@ -11,7 +11,7 @@ import {
   useToast
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
-import { Position, Team } from '@/types'
+import { Team } from '@/types'
 import { Member } from '@prisma/client'
 
 interface MemberFormProps {
