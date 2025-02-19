@@ -104,7 +104,7 @@ export default function EntryPage({ params }: EntryPageProps) {
       setEntries(data)
       
       // 전체 출전 선수 목록 업데이트
-      const uniqueMemberIds = [...new Set(data.map((entry: Entry) => entry.memberId))]
+      const uniqueMemberIds = [...new Set(data.map((entry: Entry) => entry.memberId))] as number[]
       setSelectedMembers(uniqueMemberIds)
     } catch (error) {
       toast({
