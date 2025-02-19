@@ -21,6 +21,7 @@ model Member {
   birthDate   DateTime
   generation  Int
   team        String    // CHUNGDONG, JUNGBYUNG
+  position    String    @default("")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   entries     Entry[]

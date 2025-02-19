@@ -247,7 +247,6 @@ export default function EntryPage({ params }: EntryPageProps) {
           <Tr>
             <Th>이름</Th>
             <Th>등번호</Th>
-            <Th>포지션</Th>
             <Th>출전</Th>
           </Tr>
         </Thead>
@@ -258,7 +257,6 @@ export default function EntryPage({ params }: EntryPageProps) {
               <Tr key={member.id}>
                 <Td>{member.name}</Td>
                 <Td>{member.number}</Td>
-                <Td>{member.position}</Td>
                 <Td>
                   <Checkbox
                     isChecked={isSelected(member.id)}
