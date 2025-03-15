@@ -213,6 +213,79 @@ export function PlayerStats({ members, matches, goals, entries, ratings, turnove
     </Th>
   )
 
+  const StatTable = ({ data }: { data: PlayerRecord[] }) => (
+    <Box overflowX="auto">
+      <Table size={isMobile ? "sm" : "md"} variant="simple">
+        <Thead>
+          <Tr>
+            <SortableHeader field="name">선수</SortableHeader>
+            <SortableHeader field="matches" isNumeric>경기</SortableHeader>
+            <SortableHeader field="goals" isNumeric>득점</SortableHeader>
+            <SortableHeader field="assists" isNumeric>도움</SortableHeader>
+            <SortableHeader field="mom" isNumeric>MOM</SortableHeader>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {data.map(player => (
+            <Tr key={player.id}>
+              <Td>{player.name}</Td>
+              <Td isNumeric>{player.matches}</Td>
+              <Td isNumeric>{player.goals}</Td>
+              <Td isNumeric>{player.assists}</Td>
+              <Td isNumeric>{player.mom}</Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
+    </Box>
+  )
+
+  const WinRateTable = ({ data }: { data: PlayerRecord[] }) => (
+    <Box overflowX="auto">
+      <Table size={isMobile ? "sm" : "md"} variant="simple">
+        <Thead>
+          <Tr>
+            <SortableHeader field="name">선수</SortableHeader>
+            <SortableHeader field="matchWinRate" isNumeric>경기 승률</SortableHeader>
+            <SortableHeader field="quarterWinRate" isNumeric>쿼터 승률</SortableHeader>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {data.map(player => (
+            <Tr key={player.id}>
+              <Td>{player.name}</Td>
+              <Td isNumeric>{player.matchWinRate.toFixed(1)}%</Td>
+              <Td isNumeric>{player.quarterWinRate.toFixed(1)}%</Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
+    </Box>
+  )
+
+  const TurnoverTable = ({ data }: { data: PlayerRecord[] }) => (
+    <Box overflowX="auto">
+      <Table size={isMobile ? "sm" : "md"} variant="simple">
+        <Thead>
+          <Tr>
+            <SortableHeader field="name">선수</SortableHeader>
+            <SortableHeader field="turnoversPerMatch" isNumeric>경기당 턴오버</SortableHeader>
+            <SortableHeader field="turnoversPerQuarter" isNumeric>쿼터당 턴오버</SortableHeader>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {data.map(player => (
+            <Tr key={player.id}>
+              <Td>{player.name}</Td>
+              <Td isNumeric>{player.turnoversPerMatch.toFixed(1)}</Td>
+              <Td isNumeric>{player.turnoversPerQuarter.toFixed(1)}</Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
+    </Box>
+  )
+
   return (
     <VStack spacing={8} align="stretch">
       <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={8}>
@@ -270,71 +343,59 @@ export function PlayerStats({ members, matches, goals, entries, ratings, turnove
 
       <Card borderColor={borderColor} boxShadow="sm">
         <CardBody>
-          <Box position="relative" overflowX="auto">
-            <Box
-              position={isMobile ? "sticky" : "relative"}
-              left={0}
-              zIndex={1}
-              bg={headerBg}
-              borderRight={isMobile ? "1px solid" : "none"}
-              borderColor={borderColor}
-            >
-              <Table size={isMobile ? "sm" : "md"} variant="simple">
+          {isMobile ? (
+            <Tabs variant="enclosed" colorScheme="blue">
+              <TabList>
+                <Tab>기본 기록</Tab>
+                <Tab>승률</Tab>
+                <Tab>턴오버</Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel px={0}>
+                  <StatTable data={sortedPlayerRecords} />
+                </TabPanel>
+                <TabPanel px={0}>
+                  <WinRateTable data={sortedPlayerRecords} />
+                </TabPanel>
+                <TabPanel px={0}>
+                  <TurnoverTable data={sortedPlayerRecords} />
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
+          ) : (
+            <Box position="relative" overflowX="auto">
+              <Table size="md" variant="simple">
                 <Thead>
                   <Tr>
-                    <SortableHeader
-                      field="name"
-                      left={0}
-                      bg={headerBg}
-                      zIndex={2}
-                      borderRight={isMobile ? "1px solid" : "none"}
-                      borderColor={borderColor}
-                      minW={isMobile ? "80px" : "auto"}
-                      px={isMobile ? 2 : 6}
-                    >
-                      선수
-                    </SortableHeader>
-                    <SortableHeader field="matches" isNumeric minW={isMobile ? "40px" : "auto"} px={isMobile ? 2 : 6}>경기</SortableHeader>
-                    <SortableHeader field="goals" isNumeric minW={isMobile ? "40px" : "auto"} px={isMobile ? 2 : 6}>득점</SortableHeader>
-                    <SortableHeader field="assists" isNumeric minW={isMobile ? "40px" : "auto"} px={isMobile ? 2 : 6}>도움</SortableHeader>
-                    <SortableHeader field="mom" isNumeric minW={isMobile ? "40px" : "auto"} px={isMobile ? 2 : 6}>MOM</SortableHeader>
-                    <SortableHeader field="matchWinRate" isNumeric minW={isMobile ? "60px" : "auto"} px={isMobile ? 2 : 6}>경기 승률</SortableHeader>
-                    <SortableHeader field="quarterWinRate" isNumeric minW={isMobile ? "60px" : "auto"} px={isMobile ? 2 : 6}>쿼터 승률</SortableHeader>
-                    <SortableHeader field="rating" isNumeric minW={isMobile ? "50px" : "auto"} px={isMobile ? 2 : 6}>평균 평점</SortableHeader>
-                    <SortableHeader field="turnoversPerMatch" isNumeric minW={isMobile ? "50px" : "auto"} px={isMobile ? 2 : 6}>턴오버(경기)</SortableHeader>
-                    <SortableHeader field="turnoversPerQuarter" isNumeric minW={isMobile ? "50px" : "auto"} px={isMobile ? 2 : 6}>턴오버(쿼터)</SortableHeader>
+                    <SortableHeader field="name">선수</SortableHeader>
+                    <SortableHeader field="matches" isNumeric>경기</SortableHeader>
+                    <SortableHeader field="goals" isNumeric>득점</SortableHeader>
+                    <SortableHeader field="assists" isNumeric>도움</SortableHeader>
+                    <SortableHeader field="mom" isNumeric>MOM</SortableHeader>
+                    <SortableHeader field="matchWinRate" isNumeric>경기 승률</SortableHeader>
+                    <SortableHeader field="quarterWinRate" isNumeric>쿼터 승률</SortableHeader>
+                    <SortableHeader field="turnoversPerMatch" isNumeric>턴오버(경기)</SortableHeader>
+                    <SortableHeader field="turnoversPerQuarter" isNumeric>턴오버(쿼터)</SortableHeader>
                   </Tr>
                 </Thead>
                 <Tbody>
                   {sortedPlayerRecords.map(player => (
                     <Tr key={player.id}>
-                      <Td 
-                        position={isMobile ? "sticky" : "relative"}
-                        left={0}
-                        bg={headerBg}
-                        zIndex={1}
-                        borderRight={isMobile ? "1px solid" : "none"}
-                        borderColor={borderColor}
-                        minW={isMobile ? "80px" : "auto"}
-                        px={isMobile ? 2 : 6}
-                      >
-                        <Text noOfLines={1}>{player.name}</Text>
-                      </Td>
-                      <Td isNumeric px={isMobile ? 2 : 6}>{player.matches}</Td>
-                      <Td isNumeric px={isMobile ? 2 : 6}>{player.goals}</Td>
-                      <Td isNumeric px={isMobile ? 2 : 6}>{player.assists}</Td>
-                      <Td isNumeric px={isMobile ? 2 : 6}>{player.mom}</Td>
-                      <Td isNumeric px={isMobile ? 2 : 6}>{player.matchWinRate.toFixed(1)}%</Td>
-                      <Td isNumeric px={isMobile ? 2 : 6}>{player.quarterWinRate.toFixed(1)}%</Td>
-                      <Td isNumeric px={isMobile ? 2 : 6}>{player.rating.toFixed(1)}</Td>
-                      <Td isNumeric px={isMobile ? 2 : 6}>{player.turnoversPerMatch.toFixed(1)}</Td>
-                      <Td isNumeric px={isMobile ? 2 : 6}>{player.turnoversPerQuarter.toFixed(1)}</Td>
+                      <Td>{player.name}</Td>
+                      <Td isNumeric>{player.matches}</Td>
+                      <Td isNumeric>{player.goals}</Td>
+                      <Td isNumeric>{player.assists}</Td>
+                      <Td isNumeric>{player.mom}</Td>
+                      <Td isNumeric>{player.matchWinRate.toFixed(1)}%</Td>
+                      <Td isNumeric>{player.quarterWinRate.toFixed(1)}%</Td>
+                      <Td isNumeric>{player.turnoversPerMatch.toFixed(1)}</Td>
+                      <Td isNumeric>{player.turnoversPerQuarter.toFixed(1)}</Td>
                     </Tr>
                   ))}
                 </Tbody>
               </Table>
             </Box>
-          </Box>
+          )}
         </CardBody>
       </Card>
     </VStack>
