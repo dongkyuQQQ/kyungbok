@@ -19,16 +19,27 @@ import {
 } from '@chakra-ui/react'
 import { Navigation } from '@/components/Navigation'
 import { TeamStats } from '@/components/TeamStats'
-import { PlayerStats } from '@/components/PlayerStats'
+import PlayerStats from '@/components/PlayerStats'
 import { useEffect, useState } from 'react'
-import { Member, Match, Goal, Entry, Rating, Turnover } from '@prisma/client'
+import { Member, Goal, Entry, Turnover } from '@prisma/client'
+import type { Match, Rating } from '@prisma/client'
+
+interface MatchExtended extends Match {
+  scoreA: number;
+  scoreB: number;
+}
+
+interface RatingExtended extends Rating {
+  rating: number;
+  isMom: boolean;
+}
 
 export default function RecordsPage() {
   const [members, setMembers] = useState<Member[]>([])
-  const [matches, setMatches] = useState<Match[]>([])
+  const [matches, setMatches] = useState<MatchExtended[]>([])
   const [goals, setGoals] = useState<Goal[]>([])
   const [entries, setEntries] = useState<Entry[]>([])
-  const [ratings, setRatings] = useState<Rating[]>([])
+  const [ratings, setRatings] = useState<RatingExtended[]>([])
   const [turnovers, setTurnovers] = useState<Turnover[]>([])
   const toast = useToast()
 
@@ -136,14 +147,62 @@ export default function RecordsPage() {
                     />
                   </TabPanel>
                   <TabPanel px={0}>
-                    <PlayerStats
-                      members={members}
-                      matches={matches}
-                      goals={goals}
-                      entries={entries}
-                      ratings={ratings}
-                      turnovers={turnovers}
-                    />
+                    <Box>
+                      <Tabs variant="soft-rounded" colorScheme="blue" size="sm">
+                        <TabList mb={4} overflowX="auto" pb={2} css={{ scrollbarWidth: 'none', '::-webkit-scrollbar': { display: 'none' } }}>
+                          <Tab>기본 통계</Tab>
+                          <Tab>득점/도움</Tab>
+                          <Tab>승률</Tab>
+                          <Tab>MOM/평점</Tab>
+                        </TabList>
+                        <TabPanels>
+                          <TabPanel px={0}>
+                            <PlayerStats
+                              members={members}
+                              matches={matches}
+                              goals={goals}
+                              entries={entries}
+                              ratings={ratings}
+                              turnovers={turnovers}
+                              view="basic"
+                            />
+                          </TabPanel>
+                          <TabPanel px={0}>
+                            <PlayerStats
+                              members={members}
+                              matches={matches}
+                              goals={goals}
+                              entries={entries}
+                              ratings={ratings}
+                              turnovers={turnovers}
+                              view="scoring"
+                            />
+                          </TabPanel>
+                          <TabPanel px={0}>
+                            <PlayerStats
+                              members={members}
+                              matches={matches}
+                              goals={goals}
+                              entries={entries}
+                              ratings={ratings}
+                              turnovers={turnovers}
+                              view="winrate"
+                            />
+                          </TabPanel>
+                          <TabPanel px={0}>
+                            <PlayerStats
+                              members={members}
+                              matches={matches}
+                              goals={goals}
+                              entries={entries}
+                              ratings={ratings}
+                              turnovers={turnovers}
+                              view="rating"
+                            />
+                          </TabPanel>
+                        </TabPanels>
+                      </Tabs>
+                    </Box>
                   </TabPanel>
                 </TabPanels>
               </Tabs>
